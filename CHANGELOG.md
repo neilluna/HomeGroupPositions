@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Added the change log file (this file).
 - Added the git ignore file.
 - Added the make script and build configuration files.
-- Added the initial source files. This include the base addon files and the addon settings.
+- Added the base addon files and the saved settings logic.
 ### Changed
 - Added the version number to the readme file.
 - Renamed the license file.
