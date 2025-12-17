@@ -6,8 +6,9 @@ function HomeGroupPositions:GetMyInfo()
         x = x,
         y = y,
         z = z,
-        -- heading = GetPlayerCameraHeading(),
+        heading = GetPlayerCameraHeading(),
         -- house = GetCurrentZoneHouseId(),
+        -- owner = GetHouseOwnerName(GetCurrentZoneHouseId()),
         -- timestamp = GetGameTimeMilliseconds(),
     }
 end

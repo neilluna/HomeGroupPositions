@@ -1,38 +1,72 @@
 <GuiXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
     <Controls>
+        <Control name="HomeGroupPositionsListRowTemplate" mouseEnabled="true" virtual="true">
+            <Dimensions y="30" />
+            <Controls>
+                <Label name="$(parent)CharacterAccountLabel" font="ZoFontGame" mouseEnabled="true">
+                    <Anchor point="LEFT" />
+                    <Dimensions x="300" y="30" />
+                </Label>
+                <Label name="$(parent)XLabel" font="ZoFontGame" mouseEnabled="true">
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)CharacterAccountLabel" offsetX="10" />
+                    <Dimensions x="100" y="30" />
+                </Label>
+                <Label name="$(parent)YLabel" font="ZoFontGame" mouseEnabled="true" linkEnabled="true">
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)XLabel" offsetX="10" />
+                    <Dimensions x="100" y="30" />
+                </Label>
+                <Label name="$(parent)ZLabel" font="ZoFontGame" mouseEnabled="true" linkEnabled="true">
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)YLabel" offsetX="10" />
+                    <Dimensions x="100" y="30" />
+                </Label>
+                <Label name="$(parent)HeadingLabel" font="ZoFontGame" mouseEnabled="true" linkEnabled="true">
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)ZLabel" offsetX="10" />
+                    <Dimensions x="100" y="30" />
+                </Label>
+            </Controls>
+        </Control>
+
         <TopLevelControl name="HomeGroupPositionsWindow" clampedToScreen="true" mouseEnabled="true" movable="true" hidden="true">
-            <Dimensions x="930" y="500" />
+            <Dimensions x="800" y="390" />
             <DimensionConstraints minX="600" minY="300" />
             <Anchor point="CENTER" />
 
             <Controls>
                 <Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop" />
-                <Control name="$(parent)Header">
-                    <Anchor point="TOPLEFT" />
-                    <Anchor point="TOPRIGHT" />
-                    <Dimensions y="31" />
+                <Control name="$(parent)Headers">
+                    <Anchor point="TOPLEFT" offsetX="10" />
+                    <Anchor point="TOPRIGHT" offsetX="-10" />
+                    <Dimensions y="30" />
                     <Controls>
                         <Label name="$(parent)CharacterAccountLabel" font="ZoFontGameBold" mouseEnabled="true">
-                            <Anchor point="LEFT" offsetX="10" />
+                            <Anchor point="LEFT" />
+                            <Dimensions x="300" y="30" />
                         </Label>
                         <Label name="$(parent)XLabel" font="ZoFontGameBold" mouseEnabled="true">
-                            <Anchor point="LEFT" relativeTo="$(parent)CharacterAccountLabel" relativePoint="RIGHT" offsetX="30" />
+                            <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)CharacterAccountLabel" offsetX="10" />
+                            <Dimensions x="100" y="30" />
                         </Label>
                         <Label name="$(parent)YLabel" font="ZoFontGameBold" mouseEnabled="true">
-                            <Anchor point="LEFT" relativeTo="$(parent)XLabel" relativePoint="RIGHT" offsetX="30" />
+                            <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)XLabel" offsetX="10" />
+                            <Dimensions x="100" y="30" />
                         </Label>
                         <Label name="$(parent)ZLabel" font="ZoFontGameBold" mouseEnabled="true">
-                            <Anchor point="LEFT" relativeTo="$(parent)YLabel" relativePoint="RIGHT" offsetX="30" />
+                            <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)YLabel" offsetX="10" />
+                            <Dimensions x="100" y="30" />
                         </Label>
-                        <Button name="$(parent)Close" inherits="ZO_CloseButton">
-                            <Anchor point="RIGHT" offsetX="-10" />
+                        <Label name="$(parent)HeadingLabel" font="ZoFontGameBold" mouseEnabled="true">
+                            <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)ZLabel" offsetX="10" />
+                            <Dimensions x="100" y="30" />
+                        </Label>
+                        <Button name="$(parent)CloseButton" inherits="ZO_CloseButton">
+                            <Anchor point="RIGHT" />
                         </Button>
                     </Controls>
                 </Control>
 
-                <Control name="$(parent)List" inherits="ZO_ScrollList">
-                    <Anchor point="TOPLEFT" relativeTo="$(parent)Toolbar" relativePoint="BOTTOMLEFT" offsetX="10" offsetY="10" />
-                    <Anchor point="BOTTOMRIGHT" offsetX="-10" offsetY="-10" />
+                <Control name="$(parent)List">
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$(parent)Headers" />
+                    <Anchor point="BOTTOMRIGHT" offsetX="-10" />
                 </Control>
             </Controls>
         </TopLevelControl>

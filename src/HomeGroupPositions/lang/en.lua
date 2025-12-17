@@ -17,6 +17,7 @@ HomeGroupPositions.localizationStrings = {
     X_LABEL = 'X',
     Y_LABEL = 'Y',
     Z_LABEL = 'Z',
+    HEADING_LABEL = 'Heading',
 
     -- Slash command.
     SLASH_COMMAND = '/hgp',

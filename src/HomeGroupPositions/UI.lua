@@ -2,7 +2,6 @@ HomeGroupPositions.UI = {
     name = 'HomeGroupPositionsWindow',
 
     window = nil,  -- Top-level window.
-    isVisible = false,  -- Is the window visible?
     updateUIInterval = 250,  -- How often to update the UI (milliseconds).
 
     maxRows = 12,  -- Maximum number of rows to display. Matches the maxiimum group size.
@@ -18,38 +17,74 @@ function HomeGroupPositions.UI:FormatCoordinate(coordinate)
     return string.format('%-8.1f', coordinate)
 end
 
-function HomeGroupPositions.UI:Create()
-    local window = HomeGroupPositionsWindow
-    local header = window:GetNamedChild("Header")
+function HomeGroupPositions.UI:CreateHeader(window)
+    local headers = self.window:GetNamedChild("Headers")
 
-    local characterAccountLabel = header:GetNamedChild("CharacterAccountLabel")
+    local characterAccountLabel = headers:GetNamedChild("CharacterAccountLabel")
     characterAccountLabel:SetText(GetString(HOME_GROUP_POSITIONS_CHARACTER_ACCOUNT_LABEL))
-    header:GetNamedChild("XLabel"):SetText(GetString(HOME_GROUP_POSITIONS_X_LABEL))
-    header:GetNamedChild("YLabel"):SetText(GetString(HOME_GROUP_POSITIONS_Y_LABEL))
-    header:GetNamedChild("ZLabel"):SetText(GetString(HOME_GROUP_POSITIONS_Z_LABEL))
 
-    window:SetHidden(true)
-    self.window = window
+    local xLabel = headers:GetNamedChild("XLabel")
+    xLabel:SetText(GetString(HOME_GROUP_POSITIONS_X_LABEL))
+
+    local yLabel = headers:GetNamedChild("YLabel")
+    yLabel:SetText(GetString(HOME_GROUP_POSITIONS_Y_LABEL))
+
+    local zLabel = headers:GetNamedChild("ZLabel")
+    zLabel:SetText(GetString(HOME_GROUP_POSITIONS_Z_LABEL))
+
+    local headingLabel = headers:GetNamedChild("HeadingLabel")
+    headingLabel:SetText(GetString(HOME_GROUP_POSITIONS_HEADING_LABEL))
+end
+
+function HomeGroupPositions.UI:CreateList(window)
+    local list = window:GetNamedChild("List")
+    for index = 1, self.maxRows do
+        local rowName = 'HomeGroupPositionsListRow' .. index
+        local row = WINDOW_MANAGER:CreateControlFromVirtual(rowName, list, 'HomeGroupPositionsListRowTemplate')
+        row:SetAnchor(TOPLEFT, list, TOPLEFT, 0, (index - 1) * 30)
+
+        local characterAccountLabel = row:GetNamedChild("CharacterAccountLabel")
+        characterAccountLabel:SetText('Paraselene Alqwi (@Paraselene-Alqwi)')
+
+        local xLabel = row:GetNamedChild("XLabel")
+        xLabel:SetText('123456789')
+
+        local yLabel = row:GetNamedChild("YLabel")
+        yLabel:SetText('123456789')
+
+        local zLabel = row:GetNamedChild("ZLabel")
+        zLabel:SetText('123456789')
+
+        local headingLabel = row:GetNamedChild("HeadingLabel")
+        headingLabel:SetText('123456789')
+    end
+end
+
+function HomeGroupPositions.UI:Create()
+    self.window = HomeGroupPositionsWindow
+
+    self:CreateHeader(self.window)
+    self:CreateList(self.window)
+
+    self.window:SetHidden(true)
 end
 
 function HomeGroupPositions.UI:Show()
-    self.isVisible = true
     self.window:SetHidden(false)
 end
 
 function HomeGroupPositions.UI:Hide()
-    self.isVisible = false
     self.window:SetHidden(true)
 end
 
 function HomeGroupPositions.UI:Update()
+    if self.window:IsHidden() then return end
+
     local inHouse = (GetCurrentZoneHouseId() or 0) > 0
     if not inHouse then
         self:Hide()
         return
     end
-
-    if not self.isVisible then return end
 
     local myInfo = HomeGroupPositions:GetMyInfo()
     local groupMembers = {}
@@ -61,6 +96,7 @@ function HomeGroupPositions.UI:Update()
             x = myInfo.x,
             y = myInfo.y,
             z = myInfo.z,
+            heading = myInfo.heading,
         }
     )
 
