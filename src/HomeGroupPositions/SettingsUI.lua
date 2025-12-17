@@ -10,6 +10,8 @@ function HomeGroupPositions.SettingsUI:Create()
         displayName = GetString(HOME_GROUP_POSITIONS_SETTINGS_TITLE),
         author = HomeGroupPositions.author,
         version = HomeGroupPositions.version,
+        registerForRefresh = true,  -- Refresh all controls when a setting is changed and when the panel is shown.
+        registerForDefaults = true,  -- Set all controls back to default values.
     }
     self.panel = LibAddonMenu2:RegisterAddonPanel(self.name, panelInfo)
 
@@ -23,17 +25,7 @@ function HomeGroupPositions.SettingsUI:Create()
                 HomeGroupPositions.Settings.serverSpecific.commEnabled = value
                 -- Apply changes immediately.
             end,
-        },
-        {
-            type = 'editbox',
-            name = GetString(HOME_GROUP_POSITIONS_SETTINGS_CHANNEL_NAME),
-            tooltip = GetString(HOME_GROUP_POSITIONS_SETTINGS_CHANNEL_NAME_TOOLTIP),
-            getFunc = function() return HomeGroupPositions.Settings.serverSpecific.channelName end,
-            setFunc = function(value)
-                HomeGroupPositions.Settings.serverSpecific.channelName = value
-                -- Apply changes immediately.
-            end,
-            isMultiline = false,
+            default = HomeGroupPositions.Settings.defaults.serverSpecific.commEnabled,
         },
         {
             type = 'slider',
@@ -47,6 +39,7 @@ function HomeGroupPositions.SettingsUI:Create()
                 HomeGroupPositions.Settings.serverSpecific.sendInterval = value
                 -- Apply changes immediately.
             end,
+            default = HomeGroupPositions.Settings.defaults.serverSpecific.sendInterval,
         },
         {
             type = 'slider',
@@ -60,6 +53,7 @@ function HomeGroupPositions.SettingsUI:Create()
                 HomeGroupPositions.Settings.serverSpecific.pruneTimeout = value
                 -- Apply changes immediately.
             end,
+            default = HomeGroupPositions.Settings.defaults.serverSpecific.pruneTimeout,
         },
     }
     LibAddonMenu2:RegisterOptionControls(self.name, controls)

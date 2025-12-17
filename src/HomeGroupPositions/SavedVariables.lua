@@ -5,7 +5,6 @@ HomeGroupPositions.SavedVariables = {
     serverSpecific = {
         settings = {
             commEnabled = HomeGroupPositions.Settings.defaults.serverSpecific.commEnabled,
-            channelName = HomeGroupPositions.Settings.defaults.serverSpecific.channelName,
             sendInterval = HomeGroupPositions.Settings.defaults.serverSpecific.sendInterval,
             pruneTimeout = HomeGroupPositions.Settings.defaults.serverSpecific.pruneTimeout,
         },
@@ -15,6 +14,8 @@ HomeGroupPositions.SavedVariables = {
 }
 
 function HomeGroupPositions.SavedVariables:Load()
+    HomeGroupPositions.log:Info('Loading variables.')
+
     self.serverSpecific = ZO_SavedVars:NewAccountWide(
         self.name,
         1,
@@ -27,18 +28,22 @@ function HomeGroupPositions.SavedVariables:Load()
 
     HomeGroupPositions.Settings.serverSpecific = {
         commEnabled = self.serverSpecific.settings.commEnabled,
-        channelName = self.serverSpecific.settings.channelName,
         sendInterval = self.serverSpecific.settings.sendInterval,
         pruneTimeout = self.serverSpecific.settings.pruneTimeout,
     }
+
+    HomeGroupPositions.log:Info('Variables loaded.')
 end
 
 function HomeGroupPositions.SavedVariables:Save()
+    HomeGroupPositions.log:Info('Saving variables.')
+
     self.serverSpecific.settings = {
         commEnabled = HomeGroupPositions.Settings.serverSpecific.commEnabled,
-        channelName = HomeGroupPositions.Settings.serverSpecific.channelName,
         sendInterval = HomeGroupPositions.Settings.serverSpecific.sendInterval,
         pruneTimeout = HomeGroupPositions.Settings.serverSpecific.pruneTimeout,
     }
     self.serverSpecific.lastSaved = tostring(os.date('%Y-%m-%d %H:%M:%S'))
+
+    HomeGroupPositions.log:Info('Variables saved.')
 end

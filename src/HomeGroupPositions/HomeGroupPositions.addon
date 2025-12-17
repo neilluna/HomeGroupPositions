@@ -11,7 +11,7 @@
 ## APIVersion: [API_VERSION]
 ## SavedVariables: HomeGroupPositionsSavedVariables
 
-## DependsOn: LibAddonMenu-2.0>=41 LibChatMessage>=118 LibDebugLogger>=268 LibGroupBroadcast>=91 LibSlashCommander>=45
+## DependsOn: LibAddonMenu-2.0>=41 LibDebugLogger>=268 LibGroupBroadcast>=91 LibSlashCommander>=45
 
 Class.lua
 
@@ -23,5 +23,7 @@ Settings.lua
 SavedVariables.lua
 
 SettingsUI.lua
+UI.xml
+UI.lua
 
 HomeGroupPositions.lua
