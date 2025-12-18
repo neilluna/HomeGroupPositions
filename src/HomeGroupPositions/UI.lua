@@ -54,18 +54,6 @@ function HomeGroupPositions.UI:Create()
     self.window:SetHidden(true)
 end
 
-function HomeGroupPositions.UI:Show()
-    self.window:SetHidden(false)
-end
-
-function HomeGroupPositions.UI:Hide()
-    self.window:SetHidden(true)
-end
-
-function HomeGroupPositions.UI:ToggleShowHide()
-    self.window:SetHidden(not self.window:IsHidden())
-end
-
 function HomeGroupPositions.UI:Update()
     local groupMembers = HomeGroupPositions:GetGroupMembers()
     for index = 1, self.maxRows do
@@ -94,7 +82,24 @@ function HomeGroupPositions.UI:Update()
     end
 end
 
-function HomeGroupPositions.UI:ScheduleUpdate()
+function HomeGroupPositions.UI:Show()
     self:Update()
+    self.window:SetHidden(false)
+end
+
+function HomeGroupPositions.UI:Hide()
+    self.window:SetHidden(true)
+end
+
+function HomeGroupPositions.UI:ToggleShowHide()
+    if self.window:IsHidden() then
+        self:Show()
+    else
+        self:Hide()
+    end
+end
+
+function HomeGroupPositions.UI:ScheduleUpdate()
+    if not self.window:IsHidden() then self:Update() end
     zo_callLater(function() self:ScheduleUpdate() end, self.updateUIInterval)
 end
