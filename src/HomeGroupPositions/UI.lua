@@ -2,26 +2,17 @@ HomeGroupPositions.UI = {
     name = 'HomeGroupPositionsWindow',
 
     window = nil,  -- Top-level window.
-    updateUIInterval = 250,  -- How often to update the UI (milliseconds).
+    updateUIInterval = 125,  -- How often to update the UI (milliseconds).
 
     maxRows = 12,  -- Maximum number of rows to display. Matches the maxiimum group size.
-    rows = nil,  -- Table to hold the row controls.
+    rows = {},  -- Table of row controls.
 }
-
-
-function HomeGroupPositions.UI:FormatLabel(label)
-    return string.format('%-40s', label)
-end
-
-function HomeGroupPositions.UI:FormatCoordinate(coordinate)
-    return string.format('%-8.1f', coordinate)
-end
 
 function HomeGroupPositions.UI:CreateHeader(window)
     local headers = self.window:GetNamedChild("Headers")
 
-    local characterAccountLabel = headers:GetNamedChild("CharacterAccountLabel")
-    characterAccountLabel:SetText(GetString(HOME_GROUP_POSITIONS_CHARACTER_ACCOUNT_LABEL))
+    local playerLabel = headers:GetNamedChild("PlayerLabel")
+    playerLabel:SetText(GetString(HOME_GROUP_POSITIONS_PLAYER_LABEL))
 
     local xLabel = headers:GetNamedChild("XLabel")
     xLabel:SetText(GetString(HOME_GROUP_POSITIONS_X_LABEL))
@@ -43,20 +34,12 @@ function HomeGroupPositions.UI:CreateList(window)
         local row = WINDOW_MANAGER:CreateControlFromVirtual(rowName, list, 'HomeGroupPositionsListRowTemplate')
         row:SetAnchor(TOPLEFT, list, TOPLEFT, 0, (index - 1) * 30)
 
-        local characterAccountLabel = row:GetNamedChild("CharacterAccountLabel")
-        characterAccountLabel:SetText('Paraselene Alqwi (@Paraselene-Alqwi)')
-
-        local xLabel = row:GetNamedChild("XLabel")
-        xLabel:SetText('123456789')
-
-        local yLabel = row:GetNamedChild("YLabel")
-        yLabel:SetText('123456789')
-
-        local zLabel = row:GetNamedChild("ZLabel")
-        zLabel:SetText('123456789')
-
-        local headingLabel = row:GetNamedChild("HeadingLabel")
-        headingLabel:SetText('123456789')
+        row:GetNamedChild("PlayerLabel"):SetText('')
+        row:GetNamedChild("XLabel"):SetText('')
+        row:GetNamedChild("YLabel"):SetText('')
+        row:GetNamedChild("ZLabel"):SetText('')
+        row:GetNamedChild("HeadingLabel"):SetText('')
+        self.rows[index] = row
     end
 end
 
@@ -65,6 +48,8 @@ function HomeGroupPositions.UI:Create()
 
     self:CreateHeader(self.window)
     self:CreateList(self.window)
+
+    self.window.OnCloseClicked = function(control, button, upInside) self:Hide() end
 
     self.window:SetHidden(true)
 end
@@ -77,39 +62,39 @@ function HomeGroupPositions.UI:Hide()
     self.window:SetHidden(true)
 end
 
+function HomeGroupPositions.UI:ToggleShowHide()
+    self.window:SetHidden(not self.window:IsHidden())
+end
+
 function HomeGroupPositions.UI:Update()
-    if self.window:IsHidden() then return end
+    local groupMembers = HomeGroupPositions:GetGroupMembers()
+    for index = 1, self.maxRows do
+        local row = self.rows[index]
 
-    local inHouse = (GetCurrentZoneHouseId() or 0) > 0
-    if not inHouse then
-        self:Hide()
-        return
-    end
+        local playerLabel = row:GetNamedChild("PlayerLabel")
+        local xLabel = row:GetNamedChild("XLabel")
+        local yLabel = row:GetNamedChild("YLabel")
+        local zLabel = row:GetNamedChild("ZLabel")
+        local headingLabel = row:GetNamedChild("HeadingLabel")
 
-    local myInfo = HomeGroupPositions:GetMyInfo()
-    local groupMembers = {}
-    table.insert(
-        groupMembers,
-        {
-            player = myInfo.player,
-            character = myInfo.character,
-            x = myInfo.x,
-            y = myInfo.y,
-            z = myInfo.z,
-            heading = myInfo.heading,
-        }
-    )
-
-    for i = 1, self.maxRows do
-        local member = groupMembers[i]
+        local member = groupMembers[index]
         if member then
-            local label = string.format('%s (%s)', member.character, member.player)
-            local t = string.format('%-100s%-8d%-8d%-8d', label, member.x, member.y, member.z)
-            self.rows[i]:SetText(t)
+            playerLabel:SetText(member.player)
+            xLabel:SetText(string.format('%-7.0f', member.x))
+            yLabel:SetText(string.format('%-7.0f', member.y))
+            zLabel:SetText(string.format('%-7.0f', member.z))
+            headingLabel:SetText(string.format('%-3.2f', member.heading))
         else
-            self.rows[i]:SetText(i)
+            playerLabel:SetText('')
+            xLabel:SetText('')
+            yLabel:SetText('')
+            zLabel:SetText('')
+            headingLabel:SetText('')
         end
     end
+end
 
-    zo_callLater(function() self:Update() end, self.updateUIInterval)
+function HomeGroupPositions.UI:ScheduleUpdate()
+    self:Update()
+    zo_callLater(function() self:ScheduleUpdate() end, self.updateUIInterval)
 end

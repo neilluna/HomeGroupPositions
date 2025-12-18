@@ -1,38 +1,62 @@
 function HomeGroupPositions:GetMyInfo()
     local x, y, z = GetPlayerWorldPositionInHouse()
     return {
-        character = GetUnitName('player'),
         player = GetDisplayName(),
         x = x,
         y = y,
         z = z,
-        heading = GetPlayerCameraHeading(),
-        -- house = GetCurrentZoneHouseId(),
-        -- owner = GetHouseOwnerName(GetCurrentZoneHouseId()),
-        -- timestamp = GetGameTimeMilliseconds(),
+        heading = GetPlayerCameraHeading() * 180 / math.pi,
+        house = GetCurrentZoneHouseId(),
+        owner = GetDisplayName(),
     }
 end
 
+-- Temporary: Mimics group members data.
+function HomeGroupPositions:GetGroupMembers()
+    local groupMembers = {}
+
+    local inHouse = (GetCurrentZoneHouseId() or 0) > 0
+    if inHouse then
+        local myInfo = self:GetMyInfo()
+        table.insert(
+            groupMembers,
+            {
+                player = myInfo.player,
+                x = myInfo.x,
+                y = myInfo.y,
+                z = myInfo.z,
+                heading = myInfo.heading,
+            }
+        )
+    end
+
+    return groupMembers
+end
+
 function HomeGroupPositions:EnableCommand()
-    HomeGroupPositions.Settings.serverSpecific.commEnabled = true
+    self.Settings.serverSpecific.commEnabled = true
 end
 
 function HomeGroupPositions:DisableCommand()
-    HomeGroupPositions.Settings.serverSpecific.commEnabled = false
+    self.Settings.serverSpecific.commEnabled = false
 end
 
 function HomeGroupPositions:ShowCommand()
-    HomeGroupPositions.UI:Show()
+    self.UI:Show()
 end
 
 function HomeGroupPositions:HideCommand()
-    HomeGroupPositions.UI:Hide()
+    self.UI:Hide()
+end
+
+function HomeGroupPositions:ToggleShowHideCommand()
+    self.UI:ToggleShowHide()
 end
 
 function HomeGroupPositions:CreateSlashCommands()
     local parentCommand = LibSlashCommander:Register(
         GetString(HOME_GROUP_POSITIONS_SLASH_COMMAND),
-        function() end,
+        function() self:ToggleShowHideCommand() end,
         GetString(HOME_GROUP_POSITIONS_SLASH_COMMAND_DESCRIPTION)
     )
 
@@ -58,7 +82,7 @@ function HomeGroupPositions:CreateSlashCommands()
 end
 
 function HomeGroupPositions:Logout(hookName)
-    HomeGroupPositions.log:Info('Logout with ' .. hookName)
+    self.log:Info('Logout with ' .. hookName)
     self.SavedVariables:Save()
     return false  -- Allow the logout to proceed.
 end
@@ -81,12 +105,12 @@ function HomeGroupPositions:OnAddOnLoaded(event, name)
     self.SettingsUI:Create()
 
     self.UI:Create()
-    -- self.UI:Update()
+    self.UI:ScheduleUpdate()
 
     self:CreateSlashCommands()
 end
 
-function HomeGroupPositions:Init()
+function HomeGroupPositions:Initialize()
     EVENT_MANAGER:RegisterForEvent(
         self.name,
         EVENT_ADD_ON_LOADED,
@@ -94,4 +118,4 @@ function HomeGroupPositions:Init()
     )
 end
 
-HomeGroupPositions:Init()
+HomeGroupPositions:Initialize()

@@ -13,7 +13,7 @@ HomeGroupPositions.localizationStrings = {
     SETTINGS_PRUNE_TIMEOUT_TOOLTIP = 'Positions older than this will be deleted.',
 
     -- UI labels
-    CHARACTER_ACCOUNT_LABEL = 'Character (Account)',
+    PLAYER_LABEL = 'Player',
     X_LABEL = 'X',
     Y_LABEL = 'Y',
     Z_LABEL = 'Z',
