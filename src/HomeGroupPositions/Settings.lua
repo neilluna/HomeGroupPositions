@@ -4,6 +4,9 @@ HomeGroupPositions.Settings = {
             commEnabled = false,  -- Enable sharing positions.
             sendInterval = 200,  -- How often to send updates (milliseconds).
             pruneTimeout = 5,  -- Prune position updates older than this (seconds).
+
+            windowX = nil,  -- Window X position.
+            windowY = nil,  -- Window Y position.
         },
     },
     limits = {

@@ -43,12 +43,30 @@ function HomeGroupPositions.UI:CreateList(window)
     end
 end
 
+function HomeGroupPositions.UI:SaveWindowPosition()
+    HomeGroupPositions.Settings.serverSpecific.windowX = self.window:GetLeft()
+    HomeGroupPositions.Settings.serverSpecific.windowY = self.window:GetTop()
+end
+
 function HomeGroupPositions.UI:Create()
     self.window = HomeGroupPositionsWindow
+
+    local windowX = HomeGroupPositions.Settings.serverSpecific.windowX
+    local windowY = HomeGroupPositions.Settings.serverSpecific.windowY
+
+    if windowX and windowY then
+        self.window:ClearAnchors()
+        self.window:SetAnchor(TOPLEFT, GuiRoot, TOPLEFT, windowX, windowY)
+    else
+        windowX = self.window:GetLeft()
+        windowY = self.window:GetTop()
+    end
+    self:SaveWindowPosition()
 
     self:CreateHeader(self.window)
     self:CreateList(self.window)
 
+    self.window.OnMoveStop = function() self:SaveWindowPosition() end
     self.window.OnCloseClicked = function(control, button, upInside) self:Hide() end
 
     self.window:SetHidden(true)

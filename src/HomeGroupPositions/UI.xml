@@ -30,6 +30,7 @@
             <Dimensions x="600" y="390" />
             <DimensionConstraints minX="600" minY="300" />
             <Anchor point="CENTER" />
+            <OnMoveStop>self.OnMoveStop(...)</OnMoveStop>
 
             <Controls>
                 <Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop" />
