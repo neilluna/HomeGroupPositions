@@ -20,12 +20,12 @@ function HomeGroupPositions.SettingsUI:Create()
             type = 'checkbox',
             name = GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED),
             tooltip = GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED_TOOLTIP),
-            getFunc = function() return HomeGroupPositions.Settings.serverSpecific.commEnabled end,
+            getFunc = function() return HomeGroupPositions.Settings.serverSpecific.isCommEnabled end,
             setFunc = function(value)
-                HomeGroupPositions.Settings.serverSpecific.commEnabled = value
+                HomeGroupPositions.Settings.serverSpecific.isCommEnabled = value
                 -- Apply changes immediately.
             end,
-            default = HomeGroupPositions.Settings.defaults.serverSpecific.commEnabled,
+            default = HomeGroupPositions.Settings.defaults.serverSpecific.isCommEnabled,
         },
         {
             type = 'slider',

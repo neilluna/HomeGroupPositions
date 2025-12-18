@@ -1,3 +1,9 @@
+function HomeGroupPositions:IsGroupedAndInHouse()
+    local inHouse = (GetCurrentZoneHouseId() or 0) > 0
+    local inGroup = true  -- IsUnitGrouped('player')
+    return inHouse and inGroup
+end
+
 function HomeGroupPositions:GetMyInfo()
     local x, y, z = GetPlayerWorldPositionInHouse()
     return {
@@ -15,8 +21,7 @@ end
 function HomeGroupPositions:GetGroupMembers()
     local groupMembers = {}
 
-    local inHouse = (GetCurrentZoneHouseId() or 0) > 0
-    if inHouse then
+    if self:IsGroupedAndInHouse() then
         local myInfo = self:GetMyInfo()
         table.insert(
             groupMembers,
@@ -34,11 +39,11 @@ function HomeGroupPositions:GetGroupMembers()
 end
 
 function HomeGroupPositions:EnableCommand()
-    self.Settings.serverSpecific.commEnabled = true
+    self.Settings.serverSpecific.isCommEnabled = true
 end
 
 function HomeGroupPositions:DisableCommand()
-    self.Settings.serverSpecific.commEnabled = false
+    self.Settings.serverSpecific.isCommEnabled = false
 end
 
 function HomeGroupPositions:ShowCommand()
@@ -82,7 +87,7 @@ function HomeGroupPositions:CreateSlashCommands()
 end
 
 function HomeGroupPositions:Logout(hookName)
-    self.log:Info('Logout with ' .. hookName)
+    self.log:Info('Logout via ' .. hookName)
     self.SavedVariables:Save()
     return false  -- Allow the logout to proceed.
 end

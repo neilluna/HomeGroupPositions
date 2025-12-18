@@ -6,6 +6,9 @@ HomeGroupPositions.UI = {
 
     maxRows = 12,  -- Maximum number of rows to display. Matches the maxiimum group size.
     rows = {},  -- Table of row controls.
+
+    -- Keep this in sync with the hidden attribute of the TopLevelControl "HomeGroupPositionsWindow" in UI.xml.
+    isVisible = false,  -- Is the window visible?
 }
 
 function HomeGroupPositions.UI:CreateHeader(window)
@@ -69,6 +72,8 @@ function HomeGroupPositions.UI:Create()
     self.window.OnMoveStop = function() self:SaveWindowPosition() end
     self.window.OnCloseClicked = function(control, button, upInside) self:Hide() end
 
+    -- Keep these in sync with the hidden attribute of the TopLevelControl "HomeGroupPositionsWindow" in UI.xml.
+    self.isVisible = false
     self.window:SetHidden(true)
 end
 
@@ -101,23 +106,33 @@ function HomeGroupPositions.UI:Update()
 end
 
 function HomeGroupPositions.UI:Show()
-    self:Update()
-    self.window:SetHidden(false)
+    self.isVisible = true
+    if HomeGroupPositions:IsGroupedAndInHouse() then
+        self:Update()
+        self.window:SetHidden(false)
+    else
+        -- Leave the visibility flag set, but hide the window.
+        self.window:SetHidden(true)
+    end
 end
 
 function HomeGroupPositions.UI:Hide()
+    self.isVisible = false
     self.window:SetHidden(true)
 end
 
 function HomeGroupPositions.UI:ToggleShowHide()
-    if self.window:IsHidden() then
-        self:Show()
-    else
-        self:Hide()
-    end
+    if not self.isVisible then self:Show() else self:Hide() end
 end
 
 function HomeGroupPositions.UI:ScheduleUpdate()
-    if not self.window:IsHidden() then self:Update() end
+    if HomeGroupPositions:IsGroupedAndInHouse() then
+        if self.isVisible then self:Update() end
+        self.window:SetHidden(not self.isVisible)  -- Sync the window to the visibility flag.
+    else
+        -- Leave the visibility flag as is, but hide the window.
+        self.window:SetHidden(true)
+    end
+
     zo_callLater(function() self:ScheduleUpdate() end, self.updateUIInterval)
 end

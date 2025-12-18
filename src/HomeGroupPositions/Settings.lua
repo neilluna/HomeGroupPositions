@@ -1,9 +1,9 @@
 HomeGroupPositions.Settings = {
     defaults = {
         serverSpecific = {
-            commEnabled = false,  -- Enable sharing positions.
+            isCommEnabled = false,  -- Is position sharing enabled?
             sendInterval = 200,  -- How often to send updates (milliseconds).
-            pruneTimeout = 5,  -- Prune position updates older than this (seconds).
+            pruneTimeout = 2,  -- Prune position updates older than this (seconds).
 
             windowX = nil,  -- Window X position.
             windowY = nil,  -- Window Y position.
