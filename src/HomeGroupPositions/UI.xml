@@ -1,25 +1,25 @@
 <GuiXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
     <Controls>
-        <Control name="HomeGroupPositionsListRowTemplate" mouseEnabled="true" virtual="true">
+        <Control name="HomeGroupPositionsListRowTemplate" virtual="true">
             <Dimensions y="30" />
             <Controls>
-                <Label name="$(parent)PlayerLabel" font="ZoFontGame" mouseEnabled="true">
+                <Label name="$(parent)PlayerLabel" font="ZoFontGame">
                     <Anchor point="LEFT" />
                     <Dimensions x="200" y="30" />
                 </Label>
-                <Label name="$(parent)XLabel" font="ZoFontGame" mouseEnabled="true">
+                <Label name="$(parent)XLabel" font="ZoFontGame">
                     <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)PlayerLabel" offsetX="10" />
                     <Dimensions x="75" y="30" />
                 </Label>
-                <Label name="$(parent)YLabel" font="ZoFontGame" mouseEnabled="true" linkEnabled="true">
+                <Label name="$(parent)YLabel" font="ZoFontGame">
                     <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)XLabel" offsetX="10" />
                     <Dimensions x="75" y="30" />
                 </Label>
-                <Label name="$(parent)ZLabel" font="ZoFontGame" mouseEnabled="true" linkEnabled="true">
+                <Label name="$(parent)ZLabel" font="ZoFontGame">
                     <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)YLabel" offsetX="10" />
                     <Dimensions x="75" y="30" />
                 </Label>
-                <Label name="$(parent)HeadingLabel" font="ZoFontGame" mouseEnabled="true" linkEnabled="true">
+                <Label name="$(parent)HeadingLabel" font="ZoFontGame">
                     <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)ZLabel" offsetX="10" />
                     <Dimensions x="75" y="30" />
                 </Label>
@@ -28,7 +28,6 @@
 
         <TopLevelControl name="HomeGroupPositionsWindow" clampedToScreen="true" mouseEnabled="true" movable="true" hidden="true">
             <Dimensions x="600" y="390" />
-            <DimensionConstraints minX="600" minY="300" />
             <Anchor point="CENTER" />
             <OnMoveStop>self.OnMoveStop(...)</OnMoveStop>
 
@@ -39,23 +38,23 @@
                     <Anchor point="TOPRIGHT" offsetX="-10" />
                     <Dimensions y="30" />
                     <Controls>
-                        <Label name="$(parent)PlayerLabel" font="ZoFontGameBold" mouseEnabled="true">
+                        <Label name="$(parent)PlayerLabel" font="ZoFontGameBold">
                             <Anchor point="LEFT" />
                             <Dimensions x="200" y="30" />
                         </Label>
-                        <Label name="$(parent)XLabel" font="ZoFontGameBold" mouseEnabled="true">
+                        <Label name="$(parent)XLabel" font="ZoFontGameBold">
                             <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)PlayerLabel" offsetX="10" />
                             <Dimensions x="75" y="30" />
                         </Label>
-                        <Label name="$(parent)YLabel" font="ZoFontGameBold" mouseEnabled="true">
+                        <Label name="$(parent)YLabel" font="ZoFontGameBold">
                             <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)XLabel" offsetX="10" />
                             <Dimensions x="75" y="30" />
                         </Label>
-                        <Label name="$(parent)ZLabel" font="ZoFontGameBold" mouseEnabled="true">
+                        <Label name="$(parent)ZLabel" font="ZoFontGameBold">
                             <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)YLabel" offsetX="10" />
                             <Dimensions x="75" y="30" />
                         </Label>
-                        <Label name="$(parent)HeadingLabel" font="ZoFontGameBold" mouseEnabled="true">
+                        <Label name="$(parent)HeadingLabel" font="ZoFontGameBold">
                             <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)ZLabel" offsetX="10" />
                             <Dimensions x="75" y="30" />
                         </Label>
