@@ -4,10 +4,12 @@ HomeGroupPositions.SavedVariables = {
 
     serverSpecific = {
         settings = {
-            commEnabled = HomeGroupPositions.Settings.defaults.serverSpecific.commEnabled,
-            channelName = HomeGroupPositions.Settings.defaults.serverSpecific.channelName,
+            isCommEnabled = HomeGroupPositions.Settings.defaults.serverSpecific.isCommEnabled,
             sendInterval = HomeGroupPositions.Settings.defaults.serverSpecific.sendInterval,
             pruneTimeout = HomeGroupPositions.Settings.defaults.serverSpecific.pruneTimeout,
+
+            windowX = HomeGroupPositions.Settings.defaults.serverSpecific.windowX,
+            windowY = HomeGroupPositions.Settings.defaults.serverSpecific.windowY,
         },
         schemaVersion = '[SCHEMA_VERSION]',  -- Loaded schema version.
         lastSaved = 'Never',
@@ -26,19 +28,23 @@ function HomeGroupPositions.SavedVariables:Load()
     self.serverSpecific.schemaVersion = self.schemaVersion
 
     HomeGroupPositions.Settings.serverSpecific = {
-        commEnabled = self.serverSpecific.settings.commEnabled,
-        channelName = self.serverSpecific.settings.channelName,
+        isCommEnabled = self.serverSpecific.settings.isCommEnabled,
         sendInterval = self.serverSpecific.settings.sendInterval,
         pruneTimeout = self.serverSpecific.settings.pruneTimeout,
+
+        windowX = self.serverSpecific.settings.windowX,
+        windowY = self.serverSpecific.settings.windowY,
     }
 end
 
 function HomeGroupPositions.SavedVariables:Save()
     self.serverSpecific.settings = {
-        commEnabled = HomeGroupPositions.Settings.serverSpecific.commEnabled,
-        channelName = HomeGroupPositions.Settings.serverSpecific.channelName,
+        isCommEnabled = HomeGroupPositions.Settings.serverSpecific.isCommEnabled,
         sendInterval = HomeGroupPositions.Settings.serverSpecific.sendInterval,
         pruneTimeout = HomeGroupPositions.Settings.serverSpecific.pruneTimeout,
+
+        windowX = HomeGroupPositions.Settings.serverSpecific.windowX,
+        windowY = HomeGroupPositions.Settings.serverSpecific.windowY,
     }
     self.serverSpecific.lastSaved = tostring(os.date('%Y-%m-%d %H:%M:%S'))
 end
