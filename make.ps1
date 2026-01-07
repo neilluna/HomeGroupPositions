@@ -96,7 +96,7 @@ If ($Build) {
     If (-Not (Test-Path -Path $buildInfoFile -PathType Leaf)) {
         Throw ($buildInfoFile + ' not found.')
     }
-    $buildInfo = Parse-IniFile $buildInfoFile    
+    $buildInfo = Parse-IniFile $buildInfoFile
     [int]$majorVersion = $buildInfo['Version']['major']
     [int]$minorVersion = $buildInfo['Version']['minor']
     [int]$patchVersion = $buildInfo['Version']['patch']

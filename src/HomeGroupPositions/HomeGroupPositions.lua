@@ -98,7 +98,7 @@ function HomeGroupPositions:OnAddOnLoaded(event, name)
 
     self.log = LibDebugLogger:Create(self.name)
     self.log:SetEnabled(true)
-    self.log:Info('Logging started.') 
+    self.log:Info('Logging started.')
 
     self.displayName = GetString(HOME_GROUP_POSITIONS_TITLE)
 

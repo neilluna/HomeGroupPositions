@@ -15,7 +15,7 @@
 
 Class.lua
 
-lang/en.lua           
+lang/en.lua
 lang/$(language).lua
 Strings.lua
 
