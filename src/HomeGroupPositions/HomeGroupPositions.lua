@@ -1,19 +1,19 @@
 function HomeGroupPositions:IsGroupedAndInHouse()
-    local inHouse = (GetCurrentZoneHouseId() or 0) > 0
+    local inHouse = (HomeGroupPositions.API.GetCurrentZoneHouseId() or 0) > 0
     local inGroup = true  -- IsUnitGrouped('player')
     return inHouse and inGroup
 end
 
 function HomeGroupPositions:GetMyInfo()
-    local x, y, z = GetPlayerWorldPositionInHouse()
+    local x, y, z = HomeGroupPositions.API.GetPlayerWorldPositionInHouse()
     return {
-        player = GetDisplayName(),
+        player = HomeGroupPositions.API.GetDisplayName(),
         x = x,
         y = y,
         z = z,
-        heading = GetPlayerCameraHeading() * 180 / math.pi,
-        house = GetCurrentZoneHouseId(),
-        owner = GetDisplayName(),
+        heading = HomeGroupPositions.API.GetPlayerCameraHeading() * 180 / math.pi,
+        house = HomeGroupPositions.API.GetCurrentZoneHouseId(),
+        owner = HomeGroupPositions.API.GetCurrentHouseOwner(),
     }
 end
 
@@ -31,6 +31,8 @@ function HomeGroupPositions:GetGroupMembers()
                 y = myInfo.y,
                 z = myInfo.z,
                 heading = myInfo.heading,
+                house = myInfo.house,
+                owner = myInfo.owner,
             }
         )
     end
@@ -59,52 +61,76 @@ function HomeGroupPositions:ToggleShowHideCommand()
 end
 
 function HomeGroupPositions:CreateSlashCommands()
-    local parentCommand = LibSlashCommander:Register(
-        GetString(HOME_GROUP_POSITIONS_SLASH_COMMAND),
+    local parentCommand = HomeGroupPositions.Libs.LibSlashCommander.Register(
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_SLASH_COMMAND),
         function() self:ToggleShowHideCommand() end,
-        GetString(HOME_GROUP_POSITIONS_SLASH_COMMAND_DESCRIPTION)
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_SLASH_COMMAND_DESCRIPTION)
     )
 
-    local enableCommand = parentCommand:RegisterSubCommand()
-    enableCommand:AddAlias(GetString(HOME_GROUP_POSITIONS_COMMAND_ENABLE))
-    enableCommand:SetDescription(GetString(HOME_GROUP_POSITIONS_COMMAND_ENABLE_DESCRIPTION))
-    enableCommand:SetCallback(function() self:EnableCommand() end)
+    local enableCommand = HomeGroupPositions.Libs.LibSlashCommander.RegisterSubCommand(parentCommand)
+    HomeGroupPositions.Libs.LibSlashCommander.AddAlias(
+        enableCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_ENABLE)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetDescription(
+        enableCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_ENABLE_DESCRIPTION)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetCallback(enableCommand, function() self:EnableCommand() end)
 
-    local disableCommand = parentCommand:RegisterSubCommand()
-    disableCommand:AddAlias(GetString(HOME_GROUP_POSITIONS_COMMAND_DISABLE))
-    disableCommand:SetDescription(GetString(HOME_GROUP_POSITIONS_COMMAND_DISABLE_DESCRIPTION))
-    disableCommand:SetCallback(function() self:DisableCommand() end)
+    local disableCommand = HomeGroupPositions.Libs.LibSlashCommander.RegisterSubCommand(parentCommand)
+    HomeGroupPositions.Libs.LibSlashCommander.AddAlias(
+        disableCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_DISABLE)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetDescription(
+        disableCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_DISABLE_DESCRIPTION)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetCallback(disableCommand, function() self:DisableCommand() end)
 
-    local showCommand = parentCommand:RegisterSubCommand()
-    showCommand:AddAlias(GetString(HOME_GROUP_POSITIONS_COMMAND_SHOW))
-    showCommand:SetDescription(GetString(HOME_GROUP_POSITIONS_COMMAND_SHOW_DESCRIPTION))
-    showCommand:SetCallback(function() self:ShowCommand() end)
+    local showCommand = HomeGroupPositions.Libs.LibSlashCommander.RegisterSubCommand(parentCommand)
+    HomeGroupPositions.Libs.LibSlashCommander.AddAlias(
+        showCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_SHOW)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetDescription(
+        showCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_SHOW_DESCRIPTION)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetCallback(showCommand, function() self:ShowCommand() end)
 
-    local hideCommand = parentCommand:RegisterSubCommand()
-    hideCommand:AddAlias(GetString(HOME_GROUP_POSITIONS_COMMAND_HIDE))
-    hideCommand:SetDescription(GetString(HOME_GROUP_POSITIONS_COMMAND_HIDE_DESCRIPTION))
-    hideCommand:SetCallback(function() self:HideCommand() end)
+    local hideCommand = HomeGroupPositions.Libs.LibSlashCommander.RegisterSubCommand(parentCommand)
+    HomeGroupPositions.Libs.LibSlashCommander.AddAlias(
+        hideCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_HIDE)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetDescription(
+        hideCommand,
+        HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_COMMAND_HIDE_DESCRIPTION)
+    )
+    HomeGroupPositions.Libs.LibSlashCommander.SetCallback(hideCommand, function() self:HideCommand() end)
 end
 
 function HomeGroupPositions:Logout(hookName)
-    self.log:Info('Logout via ' .. hookName)
+    HomeGroupPositions.Libs.LibDebugLogger.Info(self.log, 'Logout via ' .. hookName)
     self.SavedVariables:Save()
     return false  -- Allow the logout to proceed.
 end
 
 function HomeGroupPositions:OnAddOnLoaded(event, name)
     if name ~= self.name then return end
-    EVENT_MANAGER:UnregisterForEvent(self.name, EVENT_ADD_ON_LOADED)
+    HomeGroupPositions.API.UnregisterForEvent(self.name, EVENT_ADD_ON_LOADED)
 
-    self.log = LibDebugLogger:Create(self.name)
-    self.log:SetEnabled(true)
-    self.log:Info('Logging started.')
+    self.log = HomeGroupPositions.Libs.LibDebugLogger:Create(self.name)
+    HomeGroupPositions.Libs.LibDebugLogger.SetEnabled(self.log, true)
+    HomeGroupPositions.Libs.LibDebugLogger.Info(self.log, 'Logging started.')
 
-    self.displayName = GetString(HOME_GROUP_POSITIONS_TITLE)
+    self.displayName = HomeGroupPositions.API.GetString(HOME_GROUP_POSITIONS_TITLE)
 
-    ZO_PreHook('Logout', function() return self:Logout('Logout') end)
-    ZO_PreHook('ReloadUI', function() return self:Logout('ReloadUI') end)
-    ZO_PreHook('Quit', function() return self:Logout('Quit') end)
+    HomeGroupPositions.API.PreHook('Logout', function() return self:Logout('Logout') end)
+    HomeGroupPositions.API.PreHook('ReloadUI', function() return self:Logout('ReloadUI') end)
+    HomeGroupPositions.API.PreHook('Quit', function() return self:Logout('Quit') end)
 
     self.SavedVariables:Load()
     self.SettingsUI:Create()
@@ -116,7 +142,7 @@ function HomeGroupPositions:OnAddOnLoaded(event, name)
 end
 
 function HomeGroupPositions:Initialize()
-    EVENT_MANAGER:RegisterForEvent(
+    HomeGroupPositions.API.RegisterForEvent(
         self.name,
         EVENT_ADD_ON_LOADED,
         function(event, name) self:OnAddOnLoaded(event, name) end

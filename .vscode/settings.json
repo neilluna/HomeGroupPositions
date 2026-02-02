@@ -12,6 +12,7 @@
         "HOME_GROUP_POSITIONS_SETTINGS_PRUNE_TIMEOUT",
         "HOME_GROUP_POSITIONS_SETTINGS_PRUNE_TIMEOUT_TOOLTIP",
         "GetCurrentZoneHouseId",
+        "GetCurrentHouseOwner",
         "GetDisplayName",
         "GetGameTimeMilliseconds",
         "GetGroupSize",
@@ -20,6 +21,7 @@
         "GetString",
         "GetUnitName",
         "GetWorldName",
+        "IsUnitGrouped",
         "zo_callLater",
         "ZO_CreateStringId",
         "ZO_PreHook",
@@ -46,7 +48,6 @@
         "HOME_GROUP_POSITIONS_Y_LABEL",
         "HOME_GROUP_POSITIONS_Z_LABEL",
         "HOME_GROUP_POSITIONS_HEADING_LABEL",
-        "IsUnitGrouped"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "files.eol": "\n",

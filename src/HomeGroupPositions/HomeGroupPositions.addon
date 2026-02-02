@@ -14,6 +14,7 @@
 ## DependsOn: LibAddonMenu-2.0>=41 LibDebugLogger>=268 LibGroupBroadcast>=91 LibSlashCommander>=45
 
 Class.lua
+API.lua
 
 lang/en.lua
 lang/$(language).lua

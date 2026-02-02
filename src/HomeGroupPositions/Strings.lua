@@ -1,3 +1,3 @@
 for stringId, stringValue in pairs(HomeGroupPositions.localizationStrings) do
-    ZO_CreateStringId('HOME_GROUP_POSITIONS_' .. stringId, stringValue)
+    HomeGroupPositions.API.CreateStringId('HOME_GROUP_POSITIONS_' .. stringId, stringValue)
 end
