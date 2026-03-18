@@ -1,9 +1,6 @@
 HomeGroupPositions.UI = {
     name = 'HomeGroupPositionsWindow',
 
-    -- Convenience abbreviations.
-    api = HomeGroupPositions.API,
-
     window = nil,  -- Top-level window.
     updateUIInterval = 125,  -- How often to update the UI (milliseconds).
 
@@ -15,44 +12,44 @@ HomeGroupPositions.UI = {
 }
 
 function HomeGroupPositions.UI:CreateHeader()
-    local headers = self.api.GetNamedChild(self.window, "Headers")
+    local headers = self.window:GetNamedChild("Headers")
 
-    local playerLabel =  self.api.GetNamedChild(headers, "PlayerLabel")
-    self.api.SetText(playerLabel, self.api.GetString(HOME_GROUP_POSITIONS_PLAYER_LABEL))
+    local playerLabel = headers:GetNamedChild("PlayerLabel")
+    playerLabel:SetText(GetString(HOME_GROUP_POSITIONS_PLAYER_LABEL))
 
-    local xLabel = self.api.GetNamedChild(headers, "XLabel")
-    self.api.SetText(xLabel, self.api.GetString(HOME_GROUP_POSITIONS_X_LABEL))
+    local xLabel = headers:GetNamedChild("XLabel")
+    xLabel:SetText(GetString(HOME_GROUP_POSITIONS_X_LABEL))
 
-    local yLabel = self.api.GetNamedChild(headers, "YLabel")
-    self.api.SetText(yLabel, self.api.GetString(HOME_GROUP_POSITIONS_Y_LABEL))
+    local yLabel = headers:GetNamedChild("YLabel")
+    yLabel:SetText(GetString(HOME_GROUP_POSITIONS_Y_LABEL))
 
-    local zLabel = self.api.GetNamedChild(headers, "ZLabel")
-    self.api.SetText(zLabel, self.api.GetString(HOME_GROUP_POSITIONS_Z_LABEL))
+    local zLabel = headers:GetNamedChild("ZLabel")
+    zLabel:SetText(GetString(HOME_GROUP_POSITIONS_Z_LABEL))
 
-    local headingLabel = self.api.GetNamedChild(headers, "HeadingLabel")
-    self.api.SetText(headingLabel, self.api.GetString(HOME_GROUP_POSITIONS_HEADING_LABEL))
+    local headingLabel = headers:GetNamedChild("HeadingLabel")
+    headingLabel:SetText(GetString(HOME_GROUP_POSITIONS_HEADING_LABEL))
 end
 
 function HomeGroupPositions.UI:CreateList()
-    local list = self.api.GetNamedChild(self.window, "List")
+    local list = self.window:GetNamedChild("List")
     for index = 1, self.maxRows do
         local rowName = 'HomeGroupPositionsListRow' .. index
-        local row = self.api.CreateControlFromVirtual(rowName, list, 'HomeGroupPositionsListRowTemplate')
-        self.api.SetAnchor(row, TOPLEFT, list, TOPLEFT, 0, (index - 1) * 30)
+        local row = WINDOW_MANAGER:CreateControlFromVirtual(rowName, list, 'HomeGroupPositionsListRowTemplate')
+        row:SetAnchor(TOPLEFT, list, TOPLEFT, 0, (index - 1) * 30)
 
-        self.api.SetText(self.api.GetNamedChild(row, "PlayerLabel"), '')
-        self.api.SetText(self.api.GetNamedChild(row, "XLabel"), '')
-        self.api.SetText(self.api.GetNamedChild(row, "YLabel"), '')
-        self.api.SetText(self.api.GetNamedChild(row, "ZLabel"), '')
-        self.api.SetText(self.api.GetNamedChild(row, "HeadingLabel"), '')
+        row:GetNamedChild("PlayerLabel"):SetText('')
+        row:GetNamedChild("XLabel"):SetText('')
+        row:GetNamedChild("YLabel"):SetText('')
+        row:GetNamedChild("ZLabel"):SetText('')
+        row:GetNamedChild("HeadingLabel"):SetText('')
 
         self.rows[index] = row
     end
 end
 
 function HomeGroupPositions.UI:SaveWindowPosition()
-    HomeGroupPositions.Settings.serverSpecific.windowX = self.api.GetLeft(self.window)
-    HomeGroupPositions.Settings.serverSpecific.windowY = self.api.GetTop(self.window)
+    HomeGroupPositions.Settings.serverSpecific.windowX = self.window:GetLeft()
+    HomeGroupPositions.Settings.serverSpecific.windowY = self.window:GetTop()
 end
 
 function HomeGroupPositions.UI:Create()
@@ -62,20 +59,20 @@ function HomeGroupPositions.UI:Create()
     local windowY = HomeGroupPositions.Settings.serverSpecific.windowY
 
     if windowX and windowY then
-        self.api.ClearAnchors(self.window)
-        self.api.SetAnchor(self.window, TOPLEFT, GuiRoot, TOPLEFT, windowX, windowY)
+        self.window:ClearAnchors()
+        self.window:SetAnchor(TOPLEFT, GuiRoot, TOPLEFT, windowX, windowY)
     end
     self:SaveWindowPosition()
 
     self:CreateHeader()
     self:CreateList()
 
-    self.api.OnMoveStop(self.window, function() self:SaveWindowPosition() end)
-    self.api.OnCloseClicked(self.window, function(control, button, upInside) self:Hide() end)
+    self.window.OnMoveStop = function() self:SaveWindowPosition() end
+    self.window.OnCloseClicked = function(control, button, upInside) self:Hide() end
 
     -- Keep these in sync with the hidden attribute of the TopLevelControl "HomeGroupPositionsWindow" in UI.xml.
     self.isVisible = false
-    self.api.SetHidden(self.window, true)
+    self.window:SetHidden(true)
 end
 
 function HomeGroupPositions.UI:Update()
@@ -83,25 +80,25 @@ function HomeGroupPositions.UI:Update()
     for index = 1, self.maxRows do
         local row = self.rows[index]
 
-        local playerLabel = self.api.GetNamedChild(row, "PlayerLabel")
-        local xLabel = self.api.GetNamedChild(row, "XLabel")
-        local yLabel = self.api.GetNamedChild(row, "YLabel")
-        local zLabel = self.api.GetNamedChild(row, "ZLabel")
-        local headingLabel = self.api.GetNamedChild(row, "HeadingLabel")
+        local playerLabel = row:GetNamedChild("PlayerLabel")
+        local xLabel = row:GetNamedChild("XLabel")
+        local yLabel = row:GetNamedChild("YLabel")
+        local zLabel = row:GetNamedChild("ZLabel")
+        local headingLabel = row:GetNamedChild("HeadingLabel")
 
         local member = groupMembers[index]
         if member then
-            self.api.SetText(playerLabel, member.player)
-            self.api.SetText(xLabel, string.format('%-7.0f', member.x))
-            self.api.SetText(yLabel, string.format('%-7.0f', member.y))
-            self.api.SetText(zLabel, string.format('%-7.0f', member.z))
-            self.api.SetText(headingLabel, string.format('%-3.2f', member.heading))
+            playerLabel:SetText(member.player)
+            xLabel:SetText(string.format('%-7.0f', member.x))
+            yLabel:SetText(string.format('%-7.0f', member.y))
+            zLabel:SetText(string.format('%-7.0f', member.z))
+            headingLabel:SetText(string.format('%-3.2f', member.heading))
         else
-            self.api.SetText(playerLabel, '')
-            self.api.SetText(xLabel, '')
-            self.api.SetText(yLabel, '')
-            self.api.SetText(zLabel, '')
-            self.api.SetText(headingLabel, '')
+            playerLabel:SetText('')
+            xLabel:SetText('')
+            yLabel:SetText('')
+            zLabel:SetText('')
+            headingLabel:SetText('')
         end
     end
 end
@@ -110,16 +107,16 @@ function HomeGroupPositions.UI:Show()
     self.isVisible = true
     if HomeGroupPositions:IsGroupedAndInHouse() then
         self:Update()
-        self.api.SetHidden(self.window, false)
+        self.window:SetHidden(false)
     else
         -- Leave the visibility flag set, but hide the window.
-        self.api.SetHidden(self.window, true)
+        self.window:SetHidden(true)
     end
 end
 
 function HomeGroupPositions.UI:Hide()
     self.isVisible = false
-    self.api.SetHidden(self.window, true)
+    self.window:SetHidden(true)
 end
 
 function HomeGroupPositions.UI:ToggleShowHide()
@@ -129,11 +126,11 @@ end
 function HomeGroupPositions.UI:ScheduleUpdate()
     if HomeGroupPositions:IsGroupedAndInHouse() then
         if self.isVisible then self:Update() end
-        self.api.SetHidden(self.window, not self.isVisible)  -- Sync the window to the visibility flag.
+        self.window:SetHidden(not self.isVisible)  -- Sync the window to the visibility flag.
     else
         -- Leave the visibility flag as is, but hide the window.
-        self.api.SetHidden(self.window, true)
+        self.window:SetHidden(true)
     end
 
-    self.api.CallLater(function() self:ScheduleUpdate() end, self.updateUIInterval)
+    zo_callLater(function() self:ScheduleUpdate() end, self.updateUIInterval)
 end

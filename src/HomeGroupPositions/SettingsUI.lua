@@ -1,36 +1,33 @@
 HomeGroupPositions.SettingsUI = {
     name = 'HomeGroupPositionsSettings',
     panel = nil,
-
-    -- Convenience abbreviations.
-    api = HomeGroupPositions.API,
 }
 
 function HomeGroupPositions.SettingsUI:Create()
     local panelInfo = {
         type = 'panel',
-        name = self.api.GetString(HOME_GROUP_POSITIONS_TITLE),
-        displayName = self.api.GetString(HOME_GROUP_POSITIONS_SETTINGS_TITLE),
+        name = GetString(HOME_GROUP_POSITIONS_TITLE),
+        displayName = GetString(HOME_GROUP_POSITIONS_SETTINGS_TITLE),
         author = HomeGroupPositions.author,
         version = HomeGroupPositions.version,
         registerForRefresh = true,  -- Refresh all controls when a setting is changed and when the panel is shown.
         registerForDefaults = true,  -- Set all controls back to default values.
     }
-    self.panel = HomeGroupPositions.Libs.LibAddonMenu2.RegisterAddonPanel(self.name, panelInfo)
+    self.panel = LibAddonMenu2:RegisterAddonPanel(self.name, panelInfo)
 
     local controls = {
         {
             type = 'checkbox',
-            name = self.api.GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED),
-            tooltip = self.api.GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED_TOOLTIP),
+            name = GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED),
+            tooltip = GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED_TOOLTIP),
             getFunc = function() return HomeGroupPositions.Settings.serverSpecific.isCommEnabled end,
             setFunc = function(value) HomeGroupPositions.Settings.serverSpecific.isCommEnabled = value end,
             default = HomeGroupPositions.Settings.defaults.serverSpecific.isCommEnabled,
         },
         {
             type = 'slider',
-            name = self.api.GetString(HOME_GROUP_POSITIONS_SETTINGS_SEND_INTERVAL),
-            tooltip = self.api.GetString(HOME_GROUP_POSITIONS_SETTINGS_SEND_INTERVAL_TOOLTIP),
+            name = GetString(HOME_GROUP_POSITIONS_SETTINGS_SEND_INTERVAL),
+            tooltip = GetString(HOME_GROUP_POSITIONS_SETTINGS_SEND_INTERVAL_TOOLTIP),
             min = HomeGroupPositions.Settings.limits.sendInterval.min,
             max = HomeGroupPositions.Settings.limits.sendInterval.max,
             step = HomeGroupPositions.Settings.limits.sendInterval.step,
@@ -40,8 +37,8 @@ function HomeGroupPositions.SettingsUI:Create()
         },
         {
             type = 'slider',
-            name = self.api.GetString(HOME_GROUP_POSITIONS_SETTINGS_PRUNE_TIMEOUT),
-            tooltip = self.api.GetString(HOME_GROUP_POSITIONS_SETTINGS_PRUNE_TIMEOUT_TOOLTIP),
+            name = GetString(HOME_GROUP_POSITIONS_SETTINGS_PRUNE_TIMEOUT),
+            tooltip = GetString(HOME_GROUP_POSITIONS_SETTINGS_PRUNE_TIMEOUT_TOOLTIP),
             min = HomeGroupPositions.Settings.limits.pruneTimeout.min,
             max = HomeGroupPositions.Settings.limits.pruneTimeout.max,
             step = HomeGroupPositions.Settings.limits.pruneTimeout.step,
@@ -50,5 +47,5 @@ function HomeGroupPositions.SettingsUI:Create()
             default = HomeGroupPositions.Settings.defaults.serverSpecific.pruneTimeout,
         },
     }
-    HomeGroupPositions.Libs.LibAddonMenu2.RegisterOptionControls(self.name, controls)
+    LibAddonMenu2:RegisterOptionControls(self.name, controls)
 end

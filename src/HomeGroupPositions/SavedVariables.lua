@@ -2,9 +2,6 @@ HomeGroupPositions.SavedVariables = {
     name = 'HomeGroupPositionsSavedVariables',  -- Must match the SavedVariables declaration in HomeGroupPositions.txt.
     schemaVersion = '[SCHEMA_VERSION]',  -- Latest schema version.
 
-    -- Convenience abbreviations.
-    api = HomeGroupPositions.API,
-
     serverSpecific = {
         settings = {
             isCommEnabled = HomeGroupPositions.Settings.defaults.serverSpecific.isCommEnabled,
@@ -20,12 +17,12 @@ HomeGroupPositions.SavedVariables = {
 }
 
 function HomeGroupPositions.SavedVariables:Load()
-    self.serverSpecific = self.api.NewAccountWideSavedVars(
+    self.serverSpecific = ZO_SavedVars:NewAccountWide(
         self.name,
         1,
         nil,
         self.serverSpecific,
-        self.api.GetWorldName()
+        GetWorldName()
     )
     -- If self.serverSpecific is an old schema, migrate it here.
     self.serverSpecific.schemaVersion = self.schemaVersion
