@@ -148,5 +148,3 @@ function HomeGroupPositions:Initialize()
         function(event, name) self:OnAddOnLoaded(event, name) end
     )
 end
-
-HomeGroupPositions:Initialize()
