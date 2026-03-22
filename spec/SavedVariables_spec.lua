@@ -1,113 +1,135 @@
-describe("SavedVariables", function()
+insulate("SavedVariables:", function()
 
-    setup(function()
-        require("Class")
-        require("Settings")
-        require("SavedVariables")
-    end)
+    require("Class")
+    require("Settings")
+    require("SavedVariables")
 
     before_each(function()
-        HomeGroupPositions.Settings.serverSpecific = {
-            isCommEnabled = false,
-            sendInterval = 200,
-            pruneTimeout = 2,
-            windowX = nil,
-            windowY = nil,
+        -- Stub the ESO globals to a placebo implementation.
+        _G.GetWorldName = function() return "TestServer" end
+        -- The ZO_SavedVars:NewAccountWide is stubbed to return the Settings defaults.
+        _G.ZO_SavedVars = {
+            NewAccountWide = function(self, savedVariablesName, version, namespace, defaults, profile)
+                return {
+                    settings = {
+                        isCommEnabled = defaults.settings.isCommEnabled,
+                        sendInterval = defaults.settings.sendInterval,
+                        pruneTimeout = defaults.settings.pruneTimeout,
+
+                        windowX = defaults.settings.windowX,
+                        windowY = defaults.settings.windowY,
+                    },
+                    schemaVersion = defaults.schemaVersion,
+                    lastSaved = defaults.lastSaved,
+                }
+            end
         }
-        HomeGroupPositions.SavedVariables.serverSpecific = {
-            settings = {
+    end)
+
+    describe("name:", function()
+        it("Check against the SavedVariables declaration in HomeGroupPositions.addon.lua.", function()
+            local addonName = nil
+            for line in io.lines("obj/HomeGroupPositions/HomeGroupPositions.addon") do
+                addonName = line:match("^## SavedVariables:%s*(.+)$")
+                if addonName then break end
+            end
+            assert.equals(addonName, HomeGroupPositions.SavedVariables.name)
+        end)
+    end)
+
+    describe("schemaVersion:", function()
+        it("Checks the type.", function()
+            local schemaVersion = HomeGroupPositions.SavedVariables.serverSpecific.schemaVersion
+            assert.is_true(
+                type(schemaVersion) == "string" and schemaVersion:match("^%d%d?$") and tonumber(schemaVersion) >= 1
+            )
+        end)
+    end)
+
+    describe("serverSpecific.settings:", function()
+        it("Checks the types.", function()
+            assert.is_boolean(HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled)
+
+            local sendInterval = HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval
+            assert.is_true(type(sendInterval) == "number" and sendInterval >= 1)
+
+            local pruneTimeout = HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout
+            assert.is_true(type(pruneTimeout) == "number" and pruneTimeout >= 1)
+
+            local windowX = HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX
+            assert.is_true(windowX == nil or (type(windowX) == "number" and windowX >= 0))
+
+            local windowY = HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY
+            assert.is_true(windowY == nil or (type(windowY) == "number" and windowY >= 0))
+        end)
+    end)
+
+    describe("serverSpecific.schemaVersion:", function()
+        it("Checks the type.", function()
+            local schemaVersion = HomeGroupPositions.SavedVariables.serverSpecific.schemaVersion
+            assert.is_true(
+                type(schemaVersion) == "string" and schemaVersion:match("^%d%d?$") and tonumber(schemaVersion) >= 1
+            )
+        end)
+    end)
+
+    describe("serverSpecific.lastSaved:", function()
+        it("Checks the type.", function()
+            assert.is_true(HomeGroupPositions.SavedVariables.serverSpecific.lastSaved == "Never")
+        end)
+    end)
+
+    describe("Load():", function()
+        it("Loads the Settings.", function()
+            HomeGroupPositions.SavedVariables:Load()
+
+            assert.is_equal(
+                HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled,
+                HomeGroupPositions.Settings.serverSpecific.isCommEnabled
+            )
+            assert.equals(
+                HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval,
+                HomeGroupPositions.Settings.serverSpecific.sendInterval
+            )
+            assert.equals(
+                HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout,
+                HomeGroupPositions.Settings.serverSpecific.pruneTimeout
+            )
+            assert.equals(
+                HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX,
+                HomeGroupPositions.Settings.serverSpecific.windowX
+            )
+            assert.equals(
+                HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY,
+                HomeGroupPositions.Settings.serverSpecific.windowY
+            )
+        end)
+    end)
+
+    describe("Save():", function()
+        it("Saves the Settings into the saved variables.", function()
+            HomeGroupPositions.SavedVariables.serverSpecific.settings = {}
+            HomeGroupPositions.Settings.serverSpecific = {
                 isCommEnabled = false,
                 sendInterval = 200,
                 pruneTimeout = 2,
                 windowX = nil,
                 windowY = nil,
-            },
-            schemaVersion = HomeGroupPositions.SavedVariables.schemaVersion,
-            lastSaved = "Never",
-        }
-    end)
+            }
 
-    describe("Save", function()
-
-        it("copies isCommEnabled to saved data", function()
-            HomeGroupPositions.Settings.serverSpecific.isCommEnabled = true
             HomeGroupPositions.SavedVariables:Save()
-            assert.is_true(HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled)
+
+            assert.is_false(HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled)
+            assert.equals(200, HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval)
+            assert.equals(2, HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout)
+            assert.is_nil(HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX)
+            assert.is_nil(HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY)
         end)
 
-        it("copies sendInterval to saved data", function()
-            HomeGroupPositions.Settings.serverSpecific.sendInterval = 500
-            HomeGroupPositions.SavedVariables:Save()
-            assert.equals(500, HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval)
-        end)
-
-        it("copies pruneTimeout to saved data", function()
-            HomeGroupPositions.Settings.serverSpecific.pruneTimeout = 5
-            HomeGroupPositions.SavedVariables:Save()
-            assert.equals(5, HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout)
-        end)
-
-        it("copies windowX to saved data", function()
-            HomeGroupPositions.Settings.serverSpecific.windowX = 100
-            HomeGroupPositions.SavedVariables:Save()
-            assert.equals(100, HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX)
-        end)
-
-        it("copies windowY to saved data", function()
-            HomeGroupPositions.Settings.serverSpecific.windowY = 200
-            HomeGroupPositions.SavedVariables:Save()
-            assert.equals(200, HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY)
-        end)
-
-        it("sets lastSaved to a YYYY-MM-DD HH:MM:SS timestamp", function()
+        it("Timestamps the last save.", function()
             HomeGroupPositions.SavedVariables:Save()
             local lastSaved = HomeGroupPositions.SavedVariables.serverSpecific.lastSaved
-            assert.is_not.equals("Never", lastSaved)
             assert.is_truthy(lastSaved:match("^%d%d%d%d%-%d%d%-%d%d %d%d:%d%d:%d%d$"))
         end)
-
     end)
-
-    describe("Load", function()
-
-        it("copies isCommEnabled from saved data to Settings", function()
-            HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled = true
-            HomeGroupPositions.SavedVariables:Load()
-            assert.is_true(HomeGroupPositions.Settings.serverSpecific.isCommEnabled)
-        end)
-
-        it("copies sendInterval from saved data to Settings", function()
-            HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval = 750
-            HomeGroupPositions.SavedVariables:Load()
-            assert.equals(750, HomeGroupPositions.Settings.serverSpecific.sendInterval)
-        end)
-
-        it("copies pruneTimeout from saved data to Settings", function()
-            HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout = 7
-            HomeGroupPositions.SavedVariables:Load()
-            assert.equals(7, HomeGroupPositions.Settings.serverSpecific.pruneTimeout)
-        end)
-
-        it("copies windowX from saved data to Settings", function()
-            HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX = 300
-            HomeGroupPositions.SavedVariables:Load()
-            assert.equals(300, HomeGroupPositions.Settings.serverSpecific.windowX)
-        end)
-
-        it("copies windowY from saved data to Settings", function()
-            HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY = 400
-            HomeGroupPositions.SavedVariables:Load()
-            assert.equals(400, HomeGroupPositions.Settings.serverSpecific.windowY)
-        end)
-
-        it("stamps schemaVersion onto the saved data", function()
-            HomeGroupPositions.SavedVariables:Load()
-            assert.equals(
-                HomeGroupPositions.SavedVariables.schemaVersion,
-                HomeGroupPositions.SavedVariables.serverSpecific.schemaVersion
-            )
-        end)
-
-    end)
-
 end)

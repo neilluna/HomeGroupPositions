@@ -1,5 +1,7 @@
 HomeGroupPositions.SavedVariables = {
-    name = 'HomeGroupPositionsSavedVariables',  -- Must match the SavedVariables declaration in HomeGroupPositions.txt.
+    -- Must match the SavedVariables declaration in HomeGroupPositions.addon.
+    name = 'HomeGroupPositionsSavedVariables',
+
     schemaVersion = '[SCHEMA_VERSION]',  -- Latest schema version.
 
     serverSpecific = {
