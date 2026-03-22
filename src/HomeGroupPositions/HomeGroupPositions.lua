@@ -11,7 +11,7 @@ function HomeGroupPositions:GetMyInfo()
         x = x,
         y = y,
         z = z,
-        heading = GetPlayerCameraHeading() * 180 / math.pi,
+        heading = GetPlayerCameraHeading(),
         house = GetCurrentZoneHouseId(),
         owner = GetCurrentHouseOwner(),
     }

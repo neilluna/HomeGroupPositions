@@ -92,7 +92,7 @@ function HomeGroupPositions.UI:Update()
             xLabel:SetText(string.format('%-7.0f', member.x))
             yLabel:SetText(string.format('%-7.0f', member.y))
             zLabel:SetText(string.format('%-7.0f', member.z))
-            headingLabel:SetText(string.format('%-3.2f', member.heading))
+            headingLabel:SetText(string.format('%-1.4f', member.heading))
         else
             playerLabel:SetText('')
             xLabel:SetText('')
