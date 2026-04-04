@@ -1,4 +1,8 @@
 {
+    "files.associations": {
+        "*.busted": "lua",
+        ".luacov": "lua"
+    },
     "Lua.diagnostics.globals": [
         "EVENT_ADD_ON_LOADED",
         "EVENT_MANAGER",

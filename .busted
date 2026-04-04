@@ -1,5 +1,6 @@
 return {
     _all = {
+        coverage = true,
         helper = "spec/helper.lua",
         verbose = true,
     },

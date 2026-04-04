@@ -1,3 +1,5 @@
 .vscode/bookmarks.json
 dist/
 obj/
+luacov.report.out
+luacov.stats.out
