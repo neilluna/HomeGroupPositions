@@ -1,7 +1,7 @@
 return {
     default = {
         helper = "spec/helper.lua",
-        output = "plainTerminal",
+        output = "spec/UTFTerminal.lua",
         verbose = true,
     },
 }
