@@ -4,12 +4,12 @@ insulate("HomeGroupPositions:", function()
     require("Settings")
     require("HomeGroupPositions")
 
-    -- References to functions that may be overridden in tests.
+    -- References to addon functions that may be overridden in tests.
     local OriginalIsGroupedAndInHouse = nil
     local OriginalGetMyInfo = nil
 
     before_each(function()
-        -- Save references to functions that may be overridden in tests.
+        -- Save references to addon functions that may be overridden in tests.
         OriginalIsGroupedAndInHouse = HomeGroupPositions.IsGroupedAndInHouse
         OriginalGetMyInfo = HomeGroupPositions.GetMyInfo
 
@@ -22,43 +22,46 @@ insulate("HomeGroupPositions:", function()
     end)
 
     after_each(function()
-        -- Restore functions that may have been overridden in tests.
+        -- Restore addon functions that may have been overridden in tests.
         HomeGroupPositions.IsGroupedAndInHouse = OriginalIsGroupedAndInHouse
         HomeGroupPositions.GetMyInfo = OriginalGetMyInfo
     end)
 
     describe("IsGroupedAndInHouse():", function()
-        it("Returns true when the house ID is 0 or positive.", function()
+        it("Return true when the house ID is 0 or positive.", function()
             assert.is_true(HomeGroupPositions:IsGroupedAndInHouse())
         end)
 
-        it("Returns false when the house ID is negative.", function()
+        it("Return false when the house ID is negative.", function()
             _G.GetCurrentZoneHouseId = function() return -1 end
             assert.is_false(HomeGroupPositions:IsGroupedAndInHouse())
         end)
 
-        it("Returns false when the house ID is nil.", function()
+        it("Return false when the house ID is nil.", function()
             _G.GetCurrentZoneHouseId = function() return nil end
             assert.is_false(HomeGroupPositions:IsGroupedAndInHouse())
         end)
     end)
 
     describe("GetMyInfo():", function()
-        it("Returns the player's info.", function()
-            local info = HomeGroupPositions:GetMyInfo()
-
-            assert.equals("@TestPlayer", info.player)
-            assert.equals(100, info.x)
-            assert.equals(200, info.y)
-            assert.equals(300, info.z)
-            assert.equals(0, info.heading)
-            assert.equals(47, info.house)
-            assert.equals("@TestOwner", info.owner)
+        it("Check the player's info.", function()
+            assert.is_same(
+                {
+                    player = "@TestPlayer",
+                    x = 100,
+                    y = 200,
+                    z = 300,
+                    heading = 0,
+                    house = 47,
+                    owner = "@TestOwner",
+                },
+                HomeGroupPositions:GetMyInfo()
+            )
         end)
     end)
 
     describe("GetGroupMembers():", function()
-        it("Returns a table of group members when in a house.", function()
+        it("Return a table of group members when in a house.", function()
             HomeGroupPositions.IsGroupedAndInHouse = function() return true end
             HomeGroupPositions.GetMyInfo = function()
                 return {
@@ -74,24 +77,28 @@ insulate("HomeGroupPositions:", function()
 
             local members = HomeGroupPositions:GetGroupMembers()
             assert.equals(1, #members)
-
-            local member = members[1]
-            assert.equals("@TestPlayer", member.player)
-            assert.equals(100, member.x)
-            assert.equals(200, member.y)
-            assert.equals(300, member.z)
-            assert.equals(47, member.house)
-            assert.equals("@TestOwner", member.owner)
+            assert.is_same(
+                {
+                    player = "@TestPlayer",
+                    x = 100,
+                    y = 200,
+                    z = 300,
+                    heading = 0,
+                    house = 47,
+                    owner = "@TestOwner",
+                },
+                members[1]
+            )
         end)
 
-        it("Returns an empty table when not in a house.", function()
+        it("Return an empty table when not in a house.", function()
             HomeGroupPositions.IsGroupedAndInHouse = function() return false end
             assert.equals(0, #HomeGroupPositions:GetGroupMembers())
         end)
     end)
 
     describe("EnableCommand():", function()
-        it("Sets isCommEnabled to true.", function()
+        it("Return true when Settings.serverSpecific.isCommEnabled is set to true.", function()
             HomeGroupPositions.Settings.serverSpecific.isCommEnabled = false
             HomeGroupPositions:EnableCommand()
             assert.is_true(HomeGroupPositions.Settings.serverSpecific.isCommEnabled)
@@ -99,7 +106,7 @@ insulate("HomeGroupPositions:", function()
     end)
 
     describe("DisableCommand():", function()
-        it("Sets isCommEnabled to false.", function()
+        it("Return false when Settings.serverSpecific.isCommEnabled is set to false.", function()
             HomeGroupPositions.Settings.serverSpecific.isCommEnabled = true
             HomeGroupPositions:DisableCommand()
             assert.is_false(HomeGroupPositions.Settings.serverSpecific.isCommEnabled)

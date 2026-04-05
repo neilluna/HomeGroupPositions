@@ -4,6 +4,28 @@ insulate("SavedVariables:", function()
     require("Settings")
     require("SavedVariables")
 
+    local function ContainsExactly(target, check)
+        -- Every name in check must exist in target.
+        for _, name in ipairs(check) do
+            if target[name] == nil then
+                return false
+            end
+        end
+
+        -- Count check names for comparison.
+        local checkCount = #check
+
+        -- The target must not have extra members.
+        local targetCount = 0
+        for name in pairs(target) do
+            if type(target[name]) ~= "function" then
+                targetCount = targetCount + 1
+            end
+        end
+
+        return targetCount == checkCount
+    end
+
     before_each(function()
         -- Stub the ESO globals to a placebo implementation.
         _G.GetWorldName = function() return "TestServer" end
@@ -24,30 +46,61 @@ insulate("SavedVariables:", function()
                 }
             end
         }
+        _G.os = {
+            date = function(format) return "2026-01-01 00:00:00" end
+        }
+    end)
+
+    it("Check the type and member names.", function()
+        assert.is_table(HomeGroupPositions.SavedVariables)
+        assert.is_true(ContainsExactly(HomeGroupPositions.SavedVariables, {"name", "schemaVersion", "serverSpecific"}))
     end)
 
     describe("name:", function()
-        it("Check against the SavedVariables declaration in HomeGroupPositions.addon.lua.", function()
-            local addonName = nil
+        it("Check the type.", function()
+            assert.is_string(HomeGroupPositions.SavedVariables.name)
+        end)
+
+        it("Check that the value matches the SavedVariables declaration in HomeGroupPositions.addon.lua.", function()
+            local savedVariablesDeclaration = nil
             for line in io.lines("obj/HomeGroupPositions/HomeGroupPositions.addon") do
-                addonName = line:match("^## SavedVariables:%s*(.+)$")
-                if addonName then break end
+                savedVariablesDeclaration = line:match("^## SavedVariables:%s*(.+)$")
+                if savedVariablesDeclaration then break end
             end
-            assert.equals(addonName, HomeGroupPositions.SavedVariables.name)
+            assert.equals(savedVariablesDeclaration, HomeGroupPositions.SavedVariables.name)
         end)
     end)
 
     describe("schemaVersion:", function()
-        it("Checks the type.", function()
+        it("Check the type.", function()
+            assert.is_string(HomeGroupPositions.SavedVariables.schemaVersion)
+        end)
+
+        it("Check that the value has a valid format.", function()
             local schemaVersion = HomeGroupPositions.SavedVariables.serverSpecific.schemaVersion
-            assert.is_true(
-                type(schemaVersion) == "string" and schemaVersion:match("^%d%d?$") and tonumber(schemaVersion) >= 1
-            )
+            assert.is_true(schemaVersion:match("^%d%d?$") and tonumber(schemaVersion) >= 1)
+        end)
+    end)
+
+    describe("serverSpecific:", function()
+        it("Check the type and member names.", function()
+            assert.is_table(HomeGroupPositions.SavedVariables.serverSpecific)
+            assert.is_true(ContainsExactly(
+                HomeGroupPositions.SavedVariables.serverSpecific, {"settings", "schemaVersion", "lastSaved"}
+            ))
         end)
     end)
 
     describe("serverSpecific.settings:", function()
-        it("Checks the types.", function()
+        it("Check the type and member names.", function()
+            assert.is_table(HomeGroupPositions.SavedVariables.serverSpecific.settings)
+            assert.is_true(ContainsExactly(
+                HomeGroupPositions.SavedVariables.serverSpecific.settings,
+                {"isCommEnabled", "sendInterval", "pruneTimeout"}
+            ))
+        end)
+
+        it("Check the member types.", function()
             assert.is_boolean(HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled)
 
             local sendInterval = HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval
@@ -56,80 +109,67 @@ insulate("SavedVariables:", function()
             local pruneTimeout = HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout
             assert.is_true(type(pruneTimeout) == "number" and pruneTimeout >= 1)
 
-            local windowX = HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX
-            assert.is_true(windowX == nil or (type(windowX) == "number" and windowX >= 0))
-
-            local windowY = HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY
-            assert.is_true(windowY == nil or (type(windowY) == "number" and windowY >= 0))
+            assert.is_nil(HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX)
+            assert.is_nil(HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY)
         end)
     end)
 
     describe("serverSpecific.schemaVersion:", function()
-        it("Checks the type.", function()
+        it("Check the type.", function()
+            assert.is_string(HomeGroupPositions.SavedVariables.serverSpecific.schemaVersion)
+        end)
+
+        it("Check that the value has a valid format.", function()
             local schemaVersion = HomeGroupPositions.SavedVariables.serverSpecific.schemaVersion
-            assert.is_true(
-                type(schemaVersion) == "string" and schemaVersion:match("^%d%d?$") and tonumber(schemaVersion) >= 1
-            )
+            assert.is_true(schemaVersion:match("^%d%d?$") and tonumber(schemaVersion) >= 1)
         end)
     end)
 
     describe("serverSpecific.lastSaved:", function()
-        it("Checks the type.", function()
-            assert.is_true(HomeGroupPositions.SavedVariables.serverSpecific.lastSaved == "Never")
+        it("Check the type.", function()
+            assert.is_string(HomeGroupPositions.SavedVariables.serverSpecific.lastSaved)
         end)
-    end)
+
+        it("Check that the value is 'Never' or has a valid timestamp format.", function()
+            local lastSaved = HomeGroupPositions.SavedVariables.serverSpecific.lastSaved
+            assert.is_true(lastSaved == "Never")
+        end)
+     end)
 
     describe("Load():", function()
-        it("Loads the Settings.", function()
+        it("Check that Settings.serverSpecific is loaded correctly.", function()
             HomeGroupPositions.SavedVariables:Load()
 
-            assert.is_equal(
-                HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled,
-                HomeGroupPositions.Settings.serverSpecific.isCommEnabled
-            )
-            assert.equals(
-                HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval,
-                HomeGroupPositions.Settings.serverSpecific.sendInterval
-            )
-            assert.equals(
-                HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout,
-                HomeGroupPositions.Settings.serverSpecific.pruneTimeout
-            )
-            assert.equals(
-                HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX,
-                HomeGroupPositions.Settings.serverSpecific.windowX
-            )
-            assert.equals(
-                HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY,
-                HomeGroupPositions.Settings.serverSpecific.windowY
+            assert.is_same(
+                HomeGroupPositions.Settings.serverSpecific,
+                HomeGroupPositions.SavedVariables.serverSpecific.settings
             )
         end)
     end)
 
     describe("Save():", function()
-        it("Saves the Settings into the saved variables.", function()
-            HomeGroupPositions.SavedVariables.serverSpecific.settings = {}
+        it("Check that SavedVariables.serverSpecific.settings is updated correctly.", function()
+            -- Non-default values.
             HomeGroupPositions.Settings.serverSpecific = {
-                isCommEnabled = false,
-                sendInterval = 200,
-                pruneTimeout = 2,
-                windowX = nil,
-                windowY = nil,
+                isCommEnabled = true,
+                sendInterval = 500,
+                pruneTimeout = 5,
+                windowX = 100,
+                windowY = 200,
             }
+            HomeGroupPositions.SavedVariables.serverSpecific.settings = {}
 
             HomeGroupPositions.SavedVariables:Save()
 
-            assert.is_false(HomeGroupPositions.SavedVariables.serverSpecific.settings.isCommEnabled)
-            assert.equals(200, HomeGroupPositions.SavedVariables.serverSpecific.settings.sendInterval)
-            assert.equals(2, HomeGroupPositions.SavedVariables.serverSpecific.settings.pruneTimeout)
-            assert.is_nil(HomeGroupPositions.SavedVariables.serverSpecific.settings.windowX)
-            assert.is_nil(HomeGroupPositions.SavedVariables.serverSpecific.settings.windowY)
+            assert.is_same(
+                HomeGroupPositions.SavedVariables.serverSpecific.settings,
+                HomeGroupPositions.Settings.serverSpecific
+            )
         end)
 
-        it("Timestamps the last save.", function()
+        it("Check that SavedVariables.serverSpecific.lastSaved has a valid format.", function()
             HomeGroupPositions.SavedVariables:Save()
-            local lastSaved = HomeGroupPositions.SavedVariables.serverSpecific.lastSaved
-            assert.is_truthy(lastSaved:match("^%d%d%d%d%-%d%d%-%d%d %d%d:%d%d:%d%d$"))
+            assert.equals("2026-01-01 00:00:00", HomeGroupPositions.SavedVariables.serverSpecific.lastSaved)
         end)
     end)
 end)

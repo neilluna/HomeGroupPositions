@@ -48,5 +48,5 @@ function HomeGroupPositions.SavedVariables:Save()
         windowX = HomeGroupPositions.Settings.serverSpecific.windowX,
         windowY = HomeGroupPositions.Settings.serverSpecific.windowY,
     }
-    self.serverSpecific.lastSaved = tostring(os.date('%Y-%m-%d %H:%M:%S'))
+    self.serverSpecific.lastSaved = os.date('%Y-%m-%d %H:%M:%S')
 end

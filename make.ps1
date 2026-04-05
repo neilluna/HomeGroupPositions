@@ -10,8 +10,7 @@ Param(
 If (-not $Build -and
     -not $Clean -and
     -not $Install -and
-    -not $Uninstall -and
-    -not $UninstallData) {
+    -not $Uninstall) {
     $Build = $true
 }
 
