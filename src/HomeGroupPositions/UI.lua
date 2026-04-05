@@ -11,7 +11,7 @@ HomeGroupPositions.UI = {
     isVisible = false,  -- Is the window visible?
 }
 
-function HomeGroupPositions.UI:CreateHeader(window)
+function HomeGroupPositions.UI:CreateHeader()
     local headers = self.window:GetNamedChild("Headers")
 
     local playerLabel = headers:GetNamedChild("PlayerLabel")
@@ -30,8 +30,8 @@ function HomeGroupPositions.UI:CreateHeader(window)
     headingLabel:SetText(GetString(HOME_GROUP_POSITIONS_HEADING_LABEL))
 end
 
-function HomeGroupPositions.UI:CreateList(window)
-    local list = window:GetNamedChild("List")
+function HomeGroupPositions.UI:CreateList()
+    local list = self.window:GetNamedChild("List")
     for index = 1, self.maxRows do
         local rowName = 'HomeGroupPositionsListRow' .. index
         local row = WINDOW_MANAGER:CreateControlFromVirtual(rowName, list, 'HomeGroupPositionsListRowTemplate')
@@ -42,6 +42,7 @@ function HomeGroupPositions.UI:CreateList(window)
         row:GetNamedChild("YLabel"):SetText('')
         row:GetNamedChild("ZLabel"):SetText('')
         row:GetNamedChild("HeadingLabel"):SetText('')
+
         self.rows[index] = row
     end
 end
@@ -60,14 +61,11 @@ function HomeGroupPositions.UI:Create()
     if windowX and windowY then
         self.window:ClearAnchors()
         self.window:SetAnchor(TOPLEFT, GuiRoot, TOPLEFT, windowX, windowY)
-    else
-        windowX = self.window:GetLeft()
-        windowY = self.window:GetTop()
     end
     self:SaveWindowPosition()
 
-    self:CreateHeader(self.window)
-    self:CreateList(self.window)
+    self:CreateHeader()
+    self:CreateList()
 
     self.window.OnMoveStop = function() self:SaveWindowPosition() end
     self.window.OnCloseClicked = function(control, button, upInside) self:Hide() end
@@ -94,7 +92,7 @@ function HomeGroupPositions.UI:Update()
             xLabel:SetText(string.format('%-7.0f', member.x))
             yLabel:SetText(string.format('%-7.0f', member.y))
             zLabel:SetText(string.format('%-7.0f', member.z))
-            headingLabel:SetText(string.format('%-3.2f', member.heading))
+            headingLabel:SetText(string.format('%-1.4f', member.heading))
         else
             playerLabel:SetText('')
             xLabel:SetText('')
@@ -122,7 +120,7 @@ function HomeGroupPositions.UI:Hide()
 end
 
 function HomeGroupPositions.UI:ToggleShowHide()
-    if not self.isVisible then self:Show() else self:Hide() end
+    if self.isVisible then self:Hide() else self:Show() end
 end
 
 function HomeGroupPositions.UI:ScheduleUpdate()

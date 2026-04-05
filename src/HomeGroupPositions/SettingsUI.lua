@@ -21,10 +21,7 @@ function HomeGroupPositions.SettingsUI:Create()
             name = GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED),
             tooltip = GetString(HOME_GROUP_POSITIONS_SETTINGS_COMM_ENABLED_TOOLTIP),
             getFunc = function() return HomeGroupPositions.Settings.serverSpecific.isCommEnabled end,
-            setFunc = function(value)
-                HomeGroupPositions.Settings.serverSpecific.isCommEnabled = value
-                -- Apply changes immediately.
-            end,
+            setFunc = function(value) HomeGroupPositions.Settings.serverSpecific.isCommEnabled = value end,
             default = HomeGroupPositions.Settings.defaults.serverSpecific.isCommEnabled,
         },
         {
@@ -35,10 +32,7 @@ function HomeGroupPositions.SettingsUI:Create()
             max = HomeGroupPositions.Settings.limits.sendInterval.max,
             step = HomeGroupPositions.Settings.limits.sendInterval.step,
             getFunc = function() return HomeGroupPositions.Settings.serverSpecific.sendInterval end,
-            setFunc = function(value)
-                HomeGroupPositions.Settings.serverSpecific.sendInterval = value
-                -- Apply changes immediately.
-            end,
+            setFunc = function(value) HomeGroupPositions.Settings.serverSpecific.sendInterval = value end,
             default = HomeGroupPositions.Settings.defaults.serverSpecific.sendInterval,
         },
         {
@@ -49,10 +43,7 @@ function HomeGroupPositions.SettingsUI:Create()
             max = HomeGroupPositions.Settings.limits.pruneTimeout.max,
             step = HomeGroupPositions.Settings.limits.pruneTimeout.step,
             getFunc = function() return HomeGroupPositions.Settings.serverSpecific.pruneTimeout end,
-            setFunc = function(value)
-                HomeGroupPositions.Settings.serverSpecific.pruneTimeout = value
-                -- Apply changes immediately.
-            end,
+            setFunc = function(value) HomeGroupPositions.Settings.serverSpecific.pruneTimeout = value end,
             default = HomeGroupPositions.Settings.defaults.serverSpecific.pruneTimeout,
         },
     }

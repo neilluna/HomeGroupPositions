@@ -10,8 +10,7 @@ Param(
 If (-not $Build -and
     -not $Clean -and
     -not $Install -and
-    -not $Uninstall -and
-    -not $UninstallData) {
+    -not $Uninstall) {
     $Build = $true
 }
 
@@ -96,7 +95,7 @@ If ($Build) {
     If (-Not (Test-Path -Path $buildInfoFile -PathType Leaf)) {
         Throw ($buildInfoFile + ' not found.')
     }
-    $buildInfo = Parse-IniFile $buildInfoFile    
+    $buildInfo = Parse-IniFile $buildInfoFile
     [int]$majorVersion = $buildInfo['Version']['major']
     [int]$minorVersion = $buildInfo['Version']['minor']
     [int]$patchVersion = $buildInfo['Version']['patch']

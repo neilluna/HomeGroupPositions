@@ -11,9 +11,9 @@ function HomeGroupPositions:GetMyInfo()
         x = x,
         y = y,
         z = z,
-        heading = GetPlayerCameraHeading() * 180 / math.pi,
+        heading = GetPlayerCameraHeading(),
         house = GetCurrentZoneHouseId(),
-        owner = GetDisplayName(),
+        owner = GetCurrentHouseOwner(),
     }
 end
 
@@ -31,6 +31,8 @@ function HomeGroupPositions:GetGroupMembers()
                 y = myInfo.y,
                 z = myInfo.z,
                 heading = myInfo.heading,
+                house = myInfo.house,
+                owner = myInfo.owner,
             }
         )
     end
@@ -98,7 +100,7 @@ function HomeGroupPositions:OnAddOnLoaded(event, name)
 
     self.log = LibDebugLogger:Create(self.name)
     self.log:SetEnabled(true)
-    self.log:Info('Logging started.') 
+    self.log:Info('Logging started.')
 
     self.displayName = GetString(HOME_GROUP_POSITIONS_TITLE)
 
@@ -122,5 +124,3 @@ function HomeGroupPositions:Initialize()
         function(event, name) self:OnAddOnLoaded(event, name) end
     )
 end
-
-HomeGroupPositions:Initialize()

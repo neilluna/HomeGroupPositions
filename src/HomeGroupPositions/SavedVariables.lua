@@ -1,5 +1,7 @@
 HomeGroupPositions.SavedVariables = {
-    name = 'HomeGroupPositionsSavedVariables',  -- Must match the SavedVariables declaration in HomeGroupPositions.txt.
+    -- Must match the SavedVariables declaration in HomeGroupPositions.addon.
+    name = 'HomeGroupPositionsSavedVariables',
+
     schemaVersion = '[SCHEMA_VERSION]',  -- Latest schema version.
 
     serverSpecific = {
@@ -46,5 +48,5 @@ function HomeGroupPositions.SavedVariables:Save()
         windowX = HomeGroupPositions.Settings.serverSpecific.windowX,
         windowY = HomeGroupPositions.Settings.serverSpecific.windowY,
     }
-    self.serverSpecific.lastSaved = tostring(os.date('%Y-%m-%d %H:%M:%S'))
+    self.serverSpecific.lastSaved = os.date('%Y-%m-%d %H:%M:%S')
 end

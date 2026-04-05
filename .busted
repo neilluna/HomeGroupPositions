@@ -1,0 +1,14 @@
+return {
+    _all = {
+        coverage = true,
+        helper = "spec/helper.lua",
+        verbose = true,
+    },
+    utfColor = {
+        output = "utfTerminal",
+        Xoutput = "--color",
+    },
+    default = {
+        output = "plainTerminal",
+    },
+}
